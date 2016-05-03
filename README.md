@@ -1,5 +1,5 @@
 # XMLTools / Navigation Services
-**XMLTools** are mainly two PHP classes that helps dealing with mySQL results from SELECT statements. Whereas **XMLResult** passes the SELECT statement to the db and returns them as XML, **XMLTransformer** provides a convenient way to transform the XML using arbitrary XSL(T) documents.
+**XMLTools** are mainly two PHP classes that helps dealing with mySQL results from SELECT statements. Whereas **XMLResult** passes the SELECT statement to the db and returns the result as XML, **XMLTransformer** provides a convenient way to transform the XML using arbitrary XSL(T) documents.
 
 **Navigation Services** are a set of *XSL(T)* files that display various types of navigations as
 - Sitemaps,
