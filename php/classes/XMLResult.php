@@ -1,5 +1,5 @@
 <?php
-	class XMLResult {
+	class XMLResult implements iXMLProvider {
 		protected static $dbhost;
 		protected static $dbuser;
 		protected static $dbpassword;
