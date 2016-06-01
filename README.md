@@ -20,13 +20,81 @@
 - Display any kind of navigation structure based on one single data source, that can be an output from the db (transformed to xml with the **XMLResult** class and then brought to a standardized nested XML structure with the **XMLTransformer** class) or a simple xml file (that was hand-written or pre-processed).
 
 ## Usecase
-Although the navigation services might be the best usecase for the provided components (and a really good example to demonstrate the interaction of these components) there are lots of usecases where data should be provided as xml (then only **XMLResult** is in charge) or where data shold be displayed on a webpage (then **XMLResult**, **XMLTransformer** and XSL(T) tansformation come into play) and you did not want to use ORMs (Object-Relation-Manager) or any other technologies or you need it fast and uncomplicated.
+Although the navigation services might be the best usecase for the provided components (and a really good example to demonstrate the interaction of these components) there are lots of usecases where data should be provided as xml (then only **XMLResult** is in charge) or where data should be displayed on a webpage (then **XMLResult**, **XMLTransformer** and XSL(T) tansformation come into play) and you did not want to use ORMs (Object-Relation-Manager) or any other technologies or you need it fast and uncomplicated.
 
 ## Misc
 The classes are not very big and they can easily be customized. It's not a big deal to implement some kind of caching mechanism by writing the results (either the xml results or the transformed html results) into a file with a timestamp and then retrieving this file instead of requesting the db when the file is not too old.
 
 ## How to use
+
 ### XMLTools
+
+Getting the result of an SQL reqeuest as xml is as simple as that:
+````php
+$query_routes = "SELECT * FROM `table`";
+$res = XMLResult::getInstance($query_routes);
+$res->executeQuery();
+return $res->getXmlAsHtmlString(); // This gets an html representation for debugging purpose
+// or 
+return $res->getXmlAsString(); // This gets xml as a string
+// or
+return $res->getDomDocument(); // This gets xml as an object
+````
+Per default the root element's name is „document“ and the data row element's names are „record“. To change these names do the following:
+````php
+$query_routes = "SELECT * FROM `pages`";
+$res = XMLResult::getInstance($query_routes);
+$res->setRootElementName('siteMap');
+$res->setRecordName('siteMapNode');
+$res->executeQuery();
+return $res->getXmlAsHtmlString();
+````
+Per default the record's fields were rendered as xml elements. to render the record's fields as xml attributes do the following:
+````php
+$query_routes = "SELECT * FROM `pages`";
+$res = XMLResult::getInstance($query_routes);
+$res->fieldsAsAttributes(true);
+$res->fieldsAsElements(false);
+$res->executeQuery();
+return $res->getXmlAsHtmlString();
+````
+Alternatively you can specify fields to be rendered as xml attributes and fields to be rendered as xml elements
+````php
+$query_routes = "SELECT * FROM `pages`";
+$res = XMLResult::getInstance($query_routes);
+$res->fieldsAsAttributes(array('page_id', 'parent_id', 'position'));
+$res->fieldsAsElements(array('url', 'title', 'target'));
+$res->executeQuery();
+return $res->getXmlAsHtmlString();
+````
+To transform an xml result to html you do so by using the **XMLTransformer** and providing the return value from the **XMLResult** and an *XSL(T)* file.
+````php
+$query_routes = "SELECT * FROM `table`";
+$res = XMLResult::getInstance($query_routes);
+$res->executeQuery();
+$dom =  $res->getDomDocument();
+$trans = XMLTransformer::getInstance($dom);
+return $trans->transformToHtml("Global_Resources/xsl/html.xsl");
+````
+In case of the **navigation services** we transform the result from the **XMLResult** to another xml structure and then again transform this new xml structure to html:
+````php
+$query_routes = "SELECT * FROM `table`";
+$res = XMLResult::getInstance($query_routes);
+$res->setRootElementName('siteMap');
+$res->setRecordName('siteMapNode');
+$res->fieldsAsAttributes(true);
+$res->fieldsAsElements(false);
+$res->executeQuery();
+
+$dom =  $res->getDomDocument();
+
+$trans = XMLTransformer::getInstance($dom);
+$trans->transformToXml("Global_Resources/xsl/nestedXmlSitemap.xsl");
+
+$mainnavi = XMLTransformer::getInstance($trans->getDomDocument());
+// This additionally passes an array of variables into the *XSL(T)* file
+return $mainnavi->transformToHtml("sitemap.xsl", array('upid' => $page_path));
+````
 
 ### Navigation Services
 
@@ -92,4 +160,4 @@ This *XSL(T)* file provides a branch of th esitemap starting from the current pa
 This *XSL(T)* files provide a breadcrumb navigation that is only the current page and it's ancestors. **breadcrumb_nested.xsl** provides the nested pages in nested html ul lists that can be considered as some kind of oversized for the standard purpose. **breadcrumb_flat_list.xsl** provides the nested pages as flat html ul list what makes html markup a little bit more streamlined. **breadcrumb_flat_list.xsl** simply provides anchor tags separated by „>“ what is sufficient for most usecases.
 
 #### level.xsl
-This *XSL(T)* file provides **all** pages at the specified level no matter if they are siblings of current page or one of it's ancestors.
+This *XSL(T)* file provides **all** pages at the specified level no matter if they are siblings of current page or one of it's ancestors or not.
