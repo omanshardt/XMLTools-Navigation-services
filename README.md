@@ -29,4 +29,4 @@ The classes are not very big and they can easily be customized. It's not a big d
 
 ## How to use
 `````
-to be done
+to be done!
