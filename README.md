@@ -44,8 +44,10 @@ Per default the root element's name is „document“ and the data row element's
 ````php
 $query_routes = "SELECT * FROM `pages`";
 $res = XMLResult::getInstance($query_routes);
+
 $res->setRootElementName('siteMap');
 $res->setRecordName('siteMapNode');
+
 $res->executeQuery();
 return $res->getXmlAsHtmlString();
 ````
@@ -53,8 +55,10 @@ Per default the record's fields were rendered as xml elements. to render the rec
 ````php
 $query_routes = "SELECT * FROM `pages`";
 $res = XMLResult::getInstance($query_routes);
+
 $res->fieldsAsAttributes(true);
 $res->fieldsAsElements(false);
+
 $res->executeQuery();
 return $res->getXmlAsHtmlString();
 ````
@@ -62,8 +66,10 @@ Alternatively you can specify fields to be rendered as xml attributes and fields
 ````php
 $query_routes = "SELECT * FROM `pages`";
 $res = XMLResult::getInstance($query_routes);
+
 $res->fieldsAsAttributes(array('page_id', 'parent_id', 'position'));
 $res->fieldsAsElements(array('url', 'title', 'target'));
+
 $res->executeQuery();
 return $res->getXmlAsHtmlString();
 ````
@@ -102,7 +108,7 @@ The *XSL(T)* files provide minimalistic output (nested) html ul-list structures 
 Beside showing the requested navigation outline these files also assign classnames to specific li-elements to make css styling more easy:
 - **first:** first li-element in an ul-list
 - **last:** last li-element in an ul-list
-- **active:** current page matches the page that is represented by this li-element or current page is a child of this li-element
+- **active:** current page is a child of the li-element that represent's this page
 - **current:** current page matches the page that is represented by this li-element
 
 The underlying data structure is very simple and can be extended to any custom need. The key fields that are needed by the *XSL(T)* files are:
@@ -144,20 +150,34 @@ As long as the node names match the conventions (siteMap and siteMapNode) and fi
 #### sitemap.xsl
 This *XSL(T)* file provides a complete sitemap with all pages in their hierarchical order as nested html ul lists. It can be used if the website consists of only a few pages or if you want to provide a sitemap on a special sitemap page. With specific css styles applied it also can be used to provide a menu-like navigation with horizontal or vertical root level pages and vertical sub-levels.
 
+The **sitemap.xsl** relies on a unique page id (upid) that is passed as variable into the *XSL(T)* file. In this case the url (or path portion of the url) as it is given in the *url* attribute of the siteMapNodes is used as the unique page id. If you might want to use a numeric id or anything else instead, make sure that it is checked against the corresponding attribute.
+
 #### classic.xsl
 This *XSL(T)* file provides all root level pages with the current page's branch expanded up to the current page's child pages. This is a very common (and classic) way to display a site navigation.
+
+The **classic.xsl** relies on a unique page id (upid) that is passed as variable into the *XSL(T)* file. For further information see remarks on *sitemap.xsl*.
 
 #### singlelevel.xsl
 This *XSL(T)* file provides the current page and it's siblings if the current page is at the specified level or the ancestor of the current page at the specified level and it's siblings if the current page is at a deeper level then specified. This allows to place the different levels of the navigation independently at different locations on the page.
 
+The **singlelevel.xsl** relies on a unique page id (upid) and the level to be dispayed that are passed as variable into the *XSL(T)* file. For further information see remarks on *sitemap.xsl*.
+
 #### children.xsl
 This *XSL(T)* file provides all children of the current page.
 
+The **children.xsl** relies on a unique page id (upid) that is passed as variable into the *XSL(T)* file. For further information see remarks on *sitemap.xsl*.
+
 #### branch.xsl
-This *XSL(T)* file provides a branch of th esitemap starting from the current page.
+This *XSL(T)* file provides a branch of the sitemap starting from the current page.
+
+The **branch.xsl** relies on a unique page id (upid) that is passed as variable into the *XSL(T)* file. For further information see remarks on *sitemap.xsl*.
 
 #### breadcrumb_….xsl
 This *XSL(T)* files provide a breadcrumb navigation that is only the current page and it's ancestors. **breadcrumb_nested.xsl** provides the nested pages in nested html ul lists that can be considered as some kind of oversized for the standard purpose. **breadcrumb_flat_list.xsl** provides the nested pages as flat html ul list what makes html markup a little bit more streamlined. **breadcrumb_flat_list.xsl** simply provides anchor tags separated by „>“ what is sufficient for most usecases.
 
+The **breadcrumb_….xsl** relies on a unique page id (upid) that is passed as variable into the *XSL(T)* file. For further information see remarks on *sitemap.xsl*.
+
 #### level.xsl
 This *XSL(T)* file provides **all** pages at the specified level no matter if they are siblings of current page or one of it's ancestors or not.
+
+The **level.xsl** relies on a unique page id (upid) and the level to be dispayed that are passed as variable into the *XSL(T)* file. For further information see remarks on *sitemap.xsl*.
