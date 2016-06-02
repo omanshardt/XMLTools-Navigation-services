@@ -16,6 +16,7 @@
 
 ### XMLTransformer
 - Easy to use.
+
 ### Navigation Services
 - Display any kind of navigation structure based on one single data source, that can be an output from the db (transformed to xml with the **XMLResult** class and then brought to a standardized nested XML structure with the **XMLTransformer** class) or a simple xml file (that was hand-written or pre-processed).
 
