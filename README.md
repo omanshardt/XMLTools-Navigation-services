@@ -3,10 +3,23 @@
 
 **Navigation Services** are a set of *XSL(T)* files that display various types of navigations as
 - Sitemaps,
-- Child routes of current page, 
+- Child routes of current page,
 - Classic navigations
 - Breadcrumb navigations
 - Any other type of navigation with little customization
+
+- [Key Features](#the-key-feature-are)
+	- [XMLResult](#xmlresult)
+	- [XMLTransformer](#xmltransformer)
+	- [Navigation Services](#xmltransformer)
+- [Usecase](#usecase)
+- [Misc](#)
+- [How to use](#)
+	- [XMLTools](#)
+	- [Navigation Services](#)
+- [API](#)
+	- [XMLResult](#)
+	- [XMLTransformer](#)
 
 ## The key feature are:
 ### XMLResult
